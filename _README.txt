@@ -11,7 +11,7 @@ Dry
 Low Pass Cutoff Frequency 
 High Pass Cutoff Frequency 
 
-File ReverGUI-OscarOrtega.png display the 
+File ReverGUI-OscarOrtega.png display the User Interface for this Audio Plugin
 Tested in REAPER 
 
 Any issues contact o.c.ortega.g@gmail.com
