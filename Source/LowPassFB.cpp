@@ -9,19 +9,8 @@
 #include <iostream>
 
 LowPassFB::LowPassFB(){
-    // Set Pointers
-    rptr=0;
-    wptr=0;
-    //Set Variables for Circular Buffer
-    m_maxdelay=48000; //1 sec max
-    m_delay=8000;     //Delay for Input
-    if(dline){
-        delete [] dline;
-        dline = NULL;
-    }
-    dline = new double[m_maxdelay]; // dynamically allocate 48000 samples
-    memset(dline,0,m_maxdelay*sizeof(double));
-    
+    //std::cout<< "Constructor LowPass FB" << std::endl;
+
     //Set Variables for Feedback and Damping One Pole Filter
     M_OPFB=0.6; //Damping
     M_OPFF=1-M_OPFB; //FeedForward Coefficient
@@ -31,30 +20,10 @@ LowPassFB::LowPassFB(){
 
 LowPassFB::~LowPassFB()
 {
-    if(dline)
-    {
-        delete [] dline;
-        dline = NULL;
-     }
+    //std::cout<< "Destructor LowPass FB" << std::endl;
 }
 
-void LowPassFB::changeDelayLength(int sample){
-    rptr = wptr = 0;
-    m_maxdelay = sample; // 1 sec max
-    if(dline)
-    {
-        delete [] dline;
-        dline = NULL;
-     }
-    // dynamically allocate Sampling rate
-    dline = new double[m_maxdelay];
-    memset(dline,0,m_maxdelay*sizeof(double));
-}
 
-void LowPassFB::changeMDelay(double delay){
-    double temp=(delay*0.001)*m_maxdelay;
-    m_delay=(int)temp;
-}
 
 double LowPassFB::process(double in){
     double out;

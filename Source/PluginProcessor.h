@@ -13,6 +13,9 @@
 #include "LowPassFB.h"
 #include "NestedAllPassReverb.h"
 #include "AllPassReverbDamping.h"
+#include "LowPassFilter.h"
+#include "HighPassFilter.h"
+
 
 //==============================================================================
 /**
@@ -56,42 +59,12 @@ public:
     //==============================================================================
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
-
-    int _LP_f0 = 20;
-    double Q = 0.707100;
-    
-    double _LP_w0;
-    double _LP_alpha=0.000;
-    double _LP_b0=0.0000;
-    double _LP_b1=0.000;
-    double _LP_b2=0.0000;
-    double _LP_a0=0.000;
-    double _LP_a1=0.000;
-    double _LP_a2=0.000;
-    
-    double _LeftC_LP_z2=0.000;
-    double _LeftC_LP_z1=0.000;
-    double _RightC_LP_t2=0.000;
-    double _RightC_LP_t1=0.000;
     
     double Fs;
     bool _LP_flag=false;
     
-    int _HP_f0 = 20;
     bool _HP_flag=false;
-    double _HP_w0;
-    double _HP_alpha=0.000;
-    double _HP_b0=0.0000;
-    double _HP_b1=0.000;
-    double _HP_b2=0.0000;
-    double _HP_a0=0.000;
-    double _HP_a1=0.000;
-    double _HP_a2=0.000;
-    
-    double _LeftC_HP_z2=0.000;
-    double _LeftC_HP_z1=0.000;
-    double _RightC_HP_t2=0.000;
-    double _RightC_HP_t1=0.000;
+
     
     int _wet=50;
     int _dry=50;
@@ -132,8 +105,16 @@ public:
     AllPassReverbDamping APDampL1;
     AllPassReverbDamping APDampR1;
     
+    LowPassFilter _leftChannelLowPassFilter;
+    LowPassFilter _rightChannelLowPassFilter;
+    
+    HighPassFilter _leftChannelHighPassFilter;
+    HighPassFilter _rightChannelHighPassFilter;
+
+    
 private:
     //==============================================================================
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ReverbGUIAudioProcessor)
     
     

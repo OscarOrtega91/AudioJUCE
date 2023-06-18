@@ -21,7 +21,7 @@ ReverbGUIAudioProcessorEditor::ReverbGUIAudioProcessorEditor (ReverbGUIAudioProc
     _lpSlider.setSkewFactorFromMidPoint(1200);
     _lpSlider.addListener(this);
     _lpSlider.setTextValueSuffix(" Hz");
-    _lpSlider.setValue(audioProcessor._LP_f0);
+    _lpSlider.setValue(audioProcessor._leftChannelLowPassFilter.getCutOffFrequency());
 
     addAndMakeVisible(_lpSlider);
     _lpButton.setButtonText("Active");
@@ -46,7 +46,7 @@ ReverbGUIAudioProcessorEditor::ReverbGUIAudioProcessorEditor (ReverbGUIAudioProc
     _hpSlider.setTextValueSuffix(" Hz");
 
     _hpSlider.addListener(this);
-    _hpSlider.setValue(audioProcessor._HP_f0);
+    _hpSlider.setValue(audioProcessor._rightChannelHighPassFilter.getCutOffFrequency());
 
     addAndMakeVisible(_hpSlider);
     _hpButton.setButtonText("Active");
@@ -102,6 +102,8 @@ ReverbGUIAudioProcessorEditor::ReverbGUIAudioProcessorEditor (ReverbGUIAudioProc
     _preDelayLabel.setText ("Pre Delay ", juce::dontSendNotification);
     _preDelayLabel.attachToComponent (&_preDelaySlider, true);
     
+    setResizable(true, true);
+    //setResizeLimits(300, 150, 900, 450);
     setSize(600, 300);
 }
 
@@ -139,7 +141,7 @@ void ReverbGUIAudioProcessorEditor::resized()
     
     juce::Rectangle<int> hpArea=area.removeFromLeft((area.getWidth()/4));
     
-    juce::Rectangle<int> hpLabelArea=hpArea.removeFromTop(dialArea.getHeight()/6);
+    juce::Rectangle<int> hpLabelArea=hpArea.removeFromTop(hpArea.getHeight()/6);
     juce::Rectangle<int> toggleHP=hpArea.removeFromBottom(hpArea.getHeight()/6);
 
     juce::Rectangle<int> blankArea=area.removeFromLeft((area.getWidth()/5));
@@ -175,30 +177,26 @@ void ReverbGUIAudioProcessorEditor::resized()
 void ReverbGUIAudioProcessorEditor::sliderValueChanged(juce::Slider *slider){
     
     if(slider == &_lpSlider){
+        
         //Cooking variables for Low Pass Filter
-        audioProcessor._LP_f0=_lpSlider.getValue();
-        audioProcessor._LP_w0= 2*  juce::MathConstants<float>::pi *
-        audioProcessor._LP_f0/audioProcessor.Fs;
-        audioProcessor._LP_alpha=sin(audioProcessor._LP_w0)/(2*audioProcessor.Q);
-        //LPF
-        audioProcessor._LP_a0=1 + audioProcessor._LP_alpha;
-        audioProcessor._LP_a1 =-2* cos(audioProcessor._LP_w0);
-        audioProcessor._LP_a2= 1- audioProcessor._LP_alpha;
-
-        audioProcessor._LP_b0 =(1-cos(audioProcessor._LP_w0))/2;
-        audioProcessor._LP_b1 =1-cos(audioProcessor._LP_w0);
-        audioProcessor._LP_b2 =(1-cos(audioProcessor._LP_w0))/2;
-        //Normalize
-        audioProcessor._LP_b0 = audioProcessor._LP_b0 /audioProcessor._LP_a0;
-        audioProcessor._LP_b1 = audioProcessor._LP_b1 /audioProcessor._LP_a0;
-        audioProcessor._LP_b2 = audioProcessor._LP_b2 /audioProcessor._LP_a0;
-        audioProcessor._LP_a1 = audioProcessor._LP_a1 /audioProcessor._LP_a0;
-        audioProcessor._LP_a2 = audioProcessor._LP_a2 /audioProcessor._LP_a0;
+        //Set CutOffFrequency and cookVariables
+        audioProcessor._leftChannelLowPassFilter.setCutOffFrequency(_lpSlider.getValue());
+        audioProcessor._leftChannelLowPassFilter.cookingVariables();
+        
+        audioProcessor._rightChannelLowPassFilter.setCutOffFrequency(_lpSlider.getValue());
+        audioProcessor._rightChannelLowPassFilter.cookingVariables();
+        
         
     }
     if(slider == &_hpSlider){
         //Cooking variables for High Pass Filter
-        audioProcessor._HP_f0=_hpSlider.getValue();
+        audioProcessor._leftChannelHighPassFilter.setCutOffFrequency(_hpSlider.getValue());
+        audioProcessor._leftChannelHighPassFilter.cookingVariables();
+        
+        audioProcessor._rightChannelHighPassFilter.setCutOffFrequency(_hpSlider.getValue());
+        audioProcessor._rightChannelHighPassFilter.cookingVariables();
+        
+        /*audioProcessor._HP_f0=_hpSlider.getValue();
         audioProcessor._HP_w0= 2*  juce::MathConstants<float>::pi *
         audioProcessor._HP_f0/audioProcessor.Fs;
         audioProcessor._HP_alpha=sin(audioProcessor._HP_w0)/(2*audioProcessor.Q);
@@ -216,7 +214,7 @@ void ReverbGUIAudioProcessorEditor::sliderValueChanged(juce::Slider *slider){
         audioProcessor._HP_b1 = audioProcessor._HP_b1 /audioProcessor._HP_a0;
         audioProcessor._HP_b2 = audioProcessor._HP_b2 /audioProcessor._HP_a0;
         audioProcessor._HP_a1 = audioProcessor._HP_a1 /audioProcessor._HP_a0;
-        audioProcessor._HP_a2 = audioProcessor._HP_a2 /audioProcessor._HP_a0;
+        audioProcessor._HP_a2 = audioProcessor._HP_a2 /audioProcessor._HP_a0;*/
         
     }
     if(slider == &_preDelaySlider){

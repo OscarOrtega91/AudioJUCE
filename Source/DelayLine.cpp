@@ -12,40 +12,8 @@
 
 DelayLine::DelayLine()
 {
-    rptr = wptr = 0;
-    m_maxdelay = 48000; // 1 sec max
-    m_delay = 8000; // how many samples delay?
-    if(dline)
-    {
-        delete [] dline;
-        dline = NULL;
-     }
-    dline = new double[m_maxdelay]; // dynamically allocate 48000 samples
-    memset(dline,0,m_maxdelay*sizeof(double));
+
 }
-
-//Change Delay Length for sampling
-void DelayLine::changeDelayLength(int sample)
-{
-    rptr = wptr = 0;
-    m_maxdelay = (int)sample; // 1 sec max
-    if(dline)
-    {
-        delete [] dline;
-        dline = NULL;
-     }
-    dline = new double[m_maxdelay]; // dynamically allocate 48000 samples
-    memset(dline,0,m_maxdelay*sizeof(double));
-}
-
-//change delay M_Delay
-void DelayLine::changeMDelay(double delay)
-{
-    double temp=(delay*0.001)*m_maxdelay;
-
-    m_delay=(int)temp;
-}
-
 
 
 //-----------------------------------------------------
@@ -74,10 +42,7 @@ double DelayLine::process(double in)
     return out;
 }
 
-DelayLine::~DelayLine(void) {
-    if(dline)
-    {
-        delete [] dline;
-        dline = NULL;
-     }
+DelayLine::~DelayLine() {
+    //std::cout<< "Destructor Delay Line" << std::endl;
+
 }

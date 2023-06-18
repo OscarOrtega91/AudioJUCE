@@ -23,7 +23,12 @@ ReverbGUIAudioProcessor::ReverbGUIAudioProcessor()
 #endif
 {
     Fs=getSampleRate();
+    _leftChannelLowPassFilter.setSamplingFrequency(Fs);
+    _rightChannelLowPassFilter.setSamplingFrequency(Fs);
     
+    _leftChannelHighPassFilter.setSamplingFrequency(Fs);
+    _rightChannelHighPassFilter.setSamplingFrequency(Fs);
+
     // Initialiaze Reverb Filters
     _DelayLineV.push_back(10);
     _DelayLineV.push_back(10.53);
@@ -107,6 +112,7 @@ ReverbGUIAudioProcessor::ReverbGUIAudioProcessor()
 
 ReverbGUIAudioProcessor::~ReverbGUIAudioProcessor()
 {
+    // Clear engine to release resources
 }
 
 //==============================================================================
@@ -184,39 +190,19 @@ void ReverbGUIAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBl
     D1_L.changeMDelay(_DelayLineV.front());
     D1_R.changeMDelay(_DelayLineV.back());
     
-    //Low Pass Filter
-    _LP_w0 = 2* juce::MathConstants<float>::pi *_LP_f0/sampleRate;
-    _LP_alpha = sin(_LP_w0)/(2*Q);
-    //LPF
-    _LP_a0 =   1 + _LP_alpha;
-    _LP_a1 =  -2*cos(_LP_w0);
-    _LP_a2 =   1 - _LP_alpha;
-    _LP_b0 =  (1 - cos(_LP_w0))/2;
-    _LP_b1 =   1 - cos(_LP_w0);
-    _LP_b2 =  (1 - cos(_LP_w0))/2;
-    //Normalize
-    _LP_a1=_LP_a1/_LP_a0;
-    _LP_a2=_LP_a2/_LP_a0;
-    _LP_b0=_LP_b0/_LP_a0;
-    _LP_b1=_LP_b1/_LP_a0;
-    _LP_b2=_LP_b2/_LP_a0;
+    // Initialisation Low Pass Filter
+    _leftChannelLowPassFilter.setSamplingFrequency(Fs);
+    _leftChannelLowPassFilter.prepareToPlay();
+    _rightChannelLowPassFilter.setSamplingFrequency(Fs);
+    _rightChannelLowPassFilter.prepareToPlay();
     
-    //High Pass Filter
-    _HP_w0 = 2* juce::MathConstants<float>::pi *_HP_f0/sampleRate;
-    _HP_alpha = sin(_HP_w0)/(2*Q);
-    //HPF
-    _HP_a0 =   1 + _HP_alpha;
-    _HP_a1 =  -2*cos(_HP_w0);
-    _HP_a2 =   1 - _HP_alpha;
-    _HP_b0 =  (1 + cos(_HP_w0))/2;
-    _HP_b1 =   -(1 + cos(_HP_w0));
-    _HP_b2 =  (1 + cos(_HP_w0))/2;
-    //Normalize
-    _HP_a1=_HP_a1/_HP_a0;
-    _HP_a2=_HP_a2/_HP_a0;
-    _HP_b0=_HP_b0/_HP_a0;
-    _HP_b1=_HP_b1/_HP_a0;
-    _HP_b2=_HP_b2/_HP_a0;
+    // Initialisation High Pass Filter
+    _leftChannelHighPassFilter.setSamplingFrequency(Fs);
+    _leftChannelHighPassFilter.prepareToPlay();
+    _rightChannelHighPassFilter.setSamplingFrequency(Fs);
+    _rightChannelHighPassFilter.prepareToPlay();
+    
+
     
     
     //LPFB
@@ -305,7 +291,6 @@ void ReverbGUIAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
     auto totalNumOutputChannels = getTotalNumOutputChannels();
     double outL,inL,outR,inR;
     double d_procL,d_procR;  //Variables for Delay Output
-    double tempL, tempR;
     double _out_Left_LPCF1,_out_Left_LPCF2,_out_Left_LPCF3; //Left Channel LPCF
     double _out_Left_LPCF4,_out_Left_LPCFTotal; //Left Channel LPCF
     double _out_Right_LPCF1,_out_Right_LPCF2,_out_Right_LPCF3; //Right Channel LPCF
@@ -340,17 +325,12 @@ void ReverbGUIAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
             outL=inL;
             
             if(_LP_flag){
-                outL = _LP_b0*inL + _LeftC_LP_z1;
-                _LeftC_LP_z1 = _LP_b1*inL - _LP_a1*outL + _LeftC_LP_z2;//z1
-                _LeftC_LP_z2 = _LP_b2*inL - _LP_a2*outL; //z2
+                outL= _leftChannelLowPassFilter.process(inL);
             }
             
             // High Pass Filter if Switch is ON
             if(_HP_flag){
-                tempL=outL;
-                outL = _HP_b0*tempL + _LeftC_HP_z1;
-                _LeftC_HP_z1 = _HP_b1*tempL - _HP_a1*outL + _LeftC_HP_z2;//z1
-                _LeftC_HP_z2 = _HP_b2*tempL - _HP_a2*outL; //z2
+                outL = _leftChannelHighPassFilter.process(outL);
             }//End High Pass
             
             // Pre Delay Block
@@ -406,17 +386,13 @@ void ReverbGUIAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
             outR=inR;
             
             if(_LP_flag){
-                outR=_LP_b0*inR + _RightC_LP_t1;
-                _RightC_LP_t1 = _LP_b1 * inR - _LP_a1 * outR + _RightC_LP_t2;//t1
-                _RightC_LP_t2 = _LP_b2 * inR - _LP_a2 * outR;
+                outR = _rightChannelLowPassFilter.process(inR);
             }
             
             // High Pass Filter if Switch is ON
             if(_HP_flag){
-                tempR=outR;
-                outR=_HP_b0*tempR + _RightC_HP_t1;
-                _RightC_HP_t1 = _HP_b1 * tempR - _HP_a1 * outR + _RightC_HP_t2;//t1
-                _RightC_HP_t2 = _HP_b2 * tempR - _HP_a2 * outR;
+                outR = _rightChannelHighPassFilter.process(outR);
+
             }//End High Pass
             
             // Pre Delay Block

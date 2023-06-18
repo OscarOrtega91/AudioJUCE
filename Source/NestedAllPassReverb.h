@@ -9,30 +9,28 @@
 #define NestedAllPassReverb_h
 
 #include <stdio.h>
+#include "ReverbModule.h"
 
-class NestedAllPassReverb
+class NestedAllPassReverb : public ReverbModule
 {
 
 public:
     NestedAllPassReverb();
-    void changeDelayLength(int sample);
-    void changeMDelay(double delay);
+    void changeDelayLength(int sample) override;
     void changeMDelayNested(double delay);
-    double process(double inL);
-    ~NestedAllPassReverb();
+    double process(double inL) override;
+    virtual ~NestedAllPassReverb();
 
 private:
-    int m_delay; //Delay time
     int m_delayNested; //Delay time Nested
-    int m_maxdelay; //max delay time
-    int rptr,wptr; //Pointers for All Pass 1
     int rptrNested,wptrNested; //Pointers for Nested All Pass
 
     double m_alpha; //feedback gain (f [slider])
     double m_alphaNested; //feedback gain NEsted (f [slider])
-    double *dline=nullptr;
     double *dlineNested=nullptr;
 
+    void cleanNestedBuffer();
+    void allocateNestedBuffer();
 };
 
 #endif /* NestedAllPassReverb_hpp */

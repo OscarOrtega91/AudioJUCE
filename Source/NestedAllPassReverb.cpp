@@ -10,78 +10,37 @@
 
 NestedAllPassReverb::NestedAllPassReverb()
 {
-    rptr = wptr = 0;
-    //Fs=getSampleRate();
-    m_maxdelay = 48000; // 1 sec max
-    m_delay = 10000; // how many samples delay?
+    //std::cout<< "Constructor Nested AllPassReverb" << std::endl;
+
     m_alpha = 0.65; // allpass gain coefficient
-    if(dline)
-    {
-        delete [] dline;
-        dline = NULL;
-     }
-    dline = new double[m_maxdelay]; // dynamically allocate 48000 samples
-    memset(dline,0,m_maxdelay*sizeof(double));
     
     rptrNested=0;
     wptrNested=0;
     m_delayNested=8000;
     m_alphaNested=0.5;
-    if(dlineNested)
-    {
-        delete [] dlineNested;
-        dlineNested = NULL;
-     }
-    dlineNested = new double[m_maxdelay]; // dynamically allocate 48000 samples
-    memset(dlineNested,0,m_maxdelay*sizeof(double));
+    
+    cleanNestedBuffer();
+    allocateNestedBuffer();
     
 
 }
 NestedAllPassReverb::~NestedAllPassReverb(){
-    if(dlineNested)
-    {
-        delete [] dlineNested;
-        dlineNested = NULL;
-    }
-    if(dline)
-    {
-        delete [] dline;
-        dline = NULL;
-     }
+    //std::cout<< "Destructor NEsted AllPassReverb" << std::endl;
+
+    cleanNestedBuffer();
     
 }
 
 //Change Lenght Circular Buffer
 void NestedAllPassReverb::changeDelayLength(int sample)
 {
-    rptr = wptr = 0;
-    m_maxdelay = sample; // 1 sec max
-
-    if(dline)
-    {
-        delete [] dline;
-        dline = NULL;
-     }
-    dline = new double[m_maxdelay]; // dynamically allocate 48000 samples
-    memset(dline,0,m_maxdelay*sizeof(double));
     
-    if(dlineNested)
-    {
-        delete [] dlineNested;
-        dlineNested = NULL;
-     }
-    dlineNested = new double[m_maxdelay]; // dynamically allocate 48000 samples
-    memset(dlineNested,0,m_maxdelay*sizeof(double));
+    ReverbModule::changeDelayLength(sample);
+    
+    cleanNestedBuffer();
+    allocateNestedBuffer();
 }
 
-void NestedAllPassReverb::changeMDelay(double delay){
-    // Change Value for AP1 m_Delay
-    //Variable for delay should be send in secs
-    //Function to change it to a sample Number
-    double temp=(delay*0.001)*m_maxdelay;
-
-    m_delay=(int)temp;
-}
 void NestedAllPassReverb::changeMDelayNested(double delay){
     // Change Value for Nested AP m_Delay
     // Variable for delay should be send in secs
@@ -150,4 +109,19 @@ double NestedAllPassReverb::process(double in)
     }
     
     return out;
+}
+
+
+void NestedAllPassReverb::cleanNestedBuffer(){
+    if(dlineNested)
+    {
+        delete [] dlineNested;
+        dlineNested = nullptr;
+     }
+}
+
+
+void NestedAllPassReverb::allocateNestedBuffer(){
+    dlineNested = new double[m_maxdelay]; // dynamically allocate 48000 samples
+    memset(dlineNested,0,m_maxdelay*sizeof(double));
 }

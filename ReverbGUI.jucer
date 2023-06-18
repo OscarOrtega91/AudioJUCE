@@ -5,6 +5,14 @@
               companyName="Oscar Ortega" companyCopyright="Oscar Ortega" companyEmail="o.c.ortega.g@gmail.com">
   <MAINGROUP id="i31rwR" name="ReverbGUI">
     <GROUP id="{DD673650-7946-BA63-38C0-D33DB38931A7}" name="Source">
+      <FILE id="QkVQcT" name="HighPassFilter.cpp" compile="1" resource="0"
+            file="Source/HighPassFilter.cpp"/>
+      <FILE id="Mbq3sY" name="HighPassFilter.h" compile="0" resource="0"
+            file="Source/HighPassFilter.h"/>
+      <FILE id="vskoUK" name="LowPassFilter.cpp" compile="1" resource="0"
+            file="Source/LowPassFilter.cpp"/>
+      <FILE id="Q3Go4d" name="LowPassFilter.h" compile="0" resource="0" file="Source/LowPassFilter.h"/>
+      <FILE id="Fdnnwl" name="ReverbModule.h" compile="0" resource="0" file="Source/ReverbModule.h"/>
       <FILE id="p7k103" name="DeZipper.h" compile="0" resource="0" file="Source/DeZipper.h"/>
       <FILE id="BshcEa" name="DeZipper.cpp" compile="1" resource="0" file="Source/DeZipper.cpp"/>
       <FILE id="XLVOPR" name="PluginProcessor.cpp" compile="1" resource="0"
