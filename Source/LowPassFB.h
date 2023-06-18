@@ -9,21 +9,17 @@
 #define LowPassFB_h
 
 #include <stdio.h>
+#include "ReverbModule.h"
 
-class LowPassFB
+class LowPassFB : public ReverbModule
 {
 public:
     LowPassFB();
-    ~LowPassFB();
-    void changeDelayLength(int sample);
-    void changeMDelay(double delay);
-    double process(double in);
+    virtual ~LowPassFB();
+    double process(double in) override;
     
     private :
-    int m_delay;
-    int m_maxdelay;
-    int rptr,wptr;
-    double *dline=nullptr;
+
     double m_fbGain;
     double M_OPFB;
     double M_OPFF;

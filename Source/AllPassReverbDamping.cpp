@@ -9,17 +9,10 @@
 
 AllPassReverbDamping::AllPassReverbDamping()
 {
-    rptr = wptr = 0;
-    m_maxdelay = 48000; // 1 sec max
-    m_delay = 10000; // how many samples delay?
-    if(dline)
-    {
-        delete [] dline;
-        dline = NULL;
-    }
-    dline = new double[m_maxdelay]; // dynamically allocate 48000 samples
+    //std::cout<< "Constructor AllPassReverb Damping" << std::endl;
+
     m_alpha = 0.65; // allpass gain coefficient
-    memset(dline,0,m_maxdelay*sizeof(double));
+    //memset(dline,0,m_maxdelay*sizeof(double));
     //Set Variables for Feedback and Damping One Pole Filter
     M_OPFB=0.6; //Damping
     M_OPFF=1-M_OPFB; //FeedForward Coefficient
@@ -28,33 +21,8 @@ AllPassReverbDamping::AllPassReverbDamping()
 }
 
 AllPassReverbDamping::~AllPassReverbDamping(void) {
-    if(dline)
-    {
-        delete [] dline;
-        dline = NULL;
-     }
-}
+    //std::cout<< "Destructor AllPassReverb Damping" << std::endl;
 
-//Change Delay Length
-void AllPassReverbDamping::changeDelayLength(int sample)
-{
-    rptr = wptr = 0;
-    //Fs=getSampleRate();
-    m_maxdelay = sample; // 1 sec max
-    if(dline)
-    {
-        delete [] dline;
-        dline = NULL;
-     }
-    dline = new double[m_maxdelay]; // dynamically allocate 48000 samples
-    memset(dline,0,m_maxdelay*sizeof(double));
-}
-
-//change delay M_Delay
-void AllPassReverbDamping::changeMDelay(double delay)
-{
-    double temp=(delay*0.001)*m_maxdelay;
-    m_delay=(int)temp;
 }
 
 //-----------------------------------------------------

@@ -10,23 +10,25 @@
 
 #include <stdio.h>
 #include <iostream>
+#include "ReverbModule.h"
 
-class AllPassReverbDamping
+class AllPassReverbDamping : public ReverbModule
 {
 
 public:
     AllPassReverbDamping();
-    void changeDelayLength(int sample);
-    void changeMDelay(double sample);
+    //void changeDelayLength(int sample);
+    //void changeMDelay(double sample);
     
-    double process(double inL);
-    ~AllPassReverbDamping();
+    double process(double inL) override;
+    virtual ~AllPassReverbDamping();
 private:
-    int m_delay; //Delay time
-    int m_maxdelay; //max delay time
-    int rptr,wptr;
+    //int m_delay; //Delay time
+    //int m_maxdelay; //max delay time
+    //int rptr,wptr;
+    //double *dline=nullptr;
+
     double m_alpha; //feedback gain (f [slider])
-    double *dline=nullptr;
     double m_fbGain;
     double M_OPFB;
     double M_OPFF;

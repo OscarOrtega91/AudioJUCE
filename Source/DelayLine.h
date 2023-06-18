@@ -9,21 +9,15 @@
 #define DelayLine_h
 
 #include <stdio.h>
+#include "ReverbModule.h"
 
-
-class DelayLine
+class DelayLine : public ReverbModule
 {
 
 public:
     DelayLine();
-    void changeDelayLength(int sample);
-    void changeMDelay(double sample);
-    double process(double inL);
-    ~DelayLine();
-private:
-    int m_delay; //Delay time
-    int m_maxdelay; //max delay time
-    int rptr,wptr;
-    double *dline = nullptr;
+    double process(double inL) override;
+    virtual ~DelayLine();
+
 };
 #endif /* DelayLine_hpp */
