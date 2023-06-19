@@ -31,8 +31,12 @@ public:
     void process(juce::AudioBuffer<float>& buffer );
     void reset(); // Reset Delay Values
 
+    void resetDelay();
+    
     void prepareToPlay();
     
+    void setRoomSizeValue(double input);
+    void changeRoomSize();
     
     double Fs; //Sampling Frequency
     

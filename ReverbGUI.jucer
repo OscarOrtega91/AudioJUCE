@@ -5,16 +5,30 @@
               companyName="Oscar Ortega" companyCopyright="Oscar Ortega" companyEmail="o.c.ortega.g@gmail.com">
   <MAINGROUP id="i31rwR" name="ReverbGUI">
     <GROUP id="{DD673650-7946-BA63-38C0-D33DB38931A7}" name="Source">
-      <FILE id="YbStaC" name="Engine.cpp" compile="1" resource="0" file="Source/Engine.cpp"/>
-      <FILE id="eg2KH4" name="Engine.h" compile="0" resource="0" file="Source/Engine.h"/>
-      <FILE id="QkVQcT" name="HighPassFilter.cpp" compile="1" resource="0"
-            file="Source/HighPassFilter.cpp"/>
-      <FILE id="Mbq3sY" name="HighPassFilter.h" compile="0" resource="0"
-            file="Source/HighPassFilter.h"/>
-      <FILE id="vskoUK" name="LowPassFilter.cpp" compile="1" resource="0"
-            file="Source/LowPassFilter.cpp"/>
-      <FILE id="Q3Go4d" name="LowPassFilter.h" compile="0" resource="0" file="Source/LowPassFilter.h"/>
-      <FILE id="Fdnnwl" name="ReverbModule.h" compile="0" resource="0" file="Source/ReverbModule.h"/>
+      <GROUP id="{ACACC5A1-526A-E2B5-0211-F268D3891AD5}" name="Engine">
+        <FILE id="eg2KH4" name="Engine.h" compile="0" resource="0" file="Source/Engine.h"/>
+        <FILE id="YbStaC" name="Engine.cpp" compile="1" resource="0" file="Source/Engine.cpp"/>
+        <FILE id="QkVQcT" name="HighPassFilter.cpp" compile="1" resource="0"
+              file="Source/HighPassFilter.cpp"/>
+        <FILE id="Mbq3sY" name="HighPassFilter.h" compile="0" resource="0"
+              file="Source/HighPassFilter.h"/>
+        <FILE id="Q3Go4d" name="LowPassFilter.h" compile="0" resource="0" file="Source/LowPassFilter.h"/>
+        <FILE id="vskoUK" name="LowPassFilter.cpp" compile="1" resource="0"
+              file="Source/LowPassFilter.cpp"/>
+        <FILE id="Fdnnwl" name="ReverbModule.h" compile="0" resource="0" file="Source/ReverbModule.h"/>
+        <FILE id="HC5boV" name="DelayLine.cpp" compile="1" resource="0" file="Source/DelayLine.cpp"/>
+        <FILE id="IhiwEc" name="DelayLine.h" compile="0" resource="0" file="Source/DelayLine.h"/>
+        <FILE id="yDslDe" name="LowPassFB.cpp" compile="1" resource="0" file="Source/LowPassFB.cpp"/>
+        <FILE id="PagSzL" name="LowPassFB.h" compile="0" resource="0" file="Source/LowPassFB.h"/>
+        <FILE id="botq75" name="NestedAllPassReverb.h" compile="0" resource="0"
+              file="Source/NestedAllPassReverb.h"/>
+        <FILE id="hJL8TV" name="AllPassReverbDamping.cpp" compile="1" resource="0"
+              file="Source/AllPassReverbDamping.cpp"/>
+        <FILE id="PNo2dz" name="NestedAllPassReverb.cpp" compile="1" resource="0"
+              file="Source/NestedAllPassReverb.cpp"/>
+        <FILE id="TyNYCN" name="AllPassReverbDamping.h" compile="0" resource="0"
+              file="Source/AllPassReverbDamping.h"/>
+      </GROUP>
       <FILE id="p7k103" name="DeZipper.h" compile="0" resource="0" file="Source/DeZipper.h"/>
       <FILE id="BshcEa" name="DeZipper.cpp" compile="1" resource="0" file="Source/DeZipper.cpp"/>
       <FILE id="XLVOPR" name="PluginProcessor.cpp" compile="1" resource="0"
@@ -23,19 +37,7 @@
             file="Source/PluginProcessor.h"/>
       <FILE id="HMXXgZ" name="PluginEditor.cpp" compile="1" resource="0"
             file="Source/PluginEditor.cpp"/>
-      <FILE id="HC5boV" name="DelayLine.cpp" compile="1" resource="0" file="Source/DelayLine.cpp"/>
-      <FILE id="IhiwEc" name="DelayLine.h" compile="0" resource="0" file="Source/DelayLine.h"/>
-      <FILE id="yDslDe" name="LowPassFB.cpp" compile="1" resource="0" file="Source/LowPassFB.cpp"/>
-      <FILE id="PagSzL" name="LowPassFB.h" compile="0" resource="0" file="Source/LowPassFB.h"/>
       <FILE id="YIz7Sn" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
-      <FILE id="hJL8TV" name="AllPassReverbDamping.cpp" compile="1" resource="0"
-            file="Source/AllPassReverbDamping.cpp"/>
-      <FILE id="TyNYCN" name="AllPassReverbDamping.h" compile="0" resource="0"
-            file="Source/AllPassReverbDamping.h"/>
-      <FILE id="botq75" name="NestedAllPassReverb.h" compile="0" resource="0"
-            file="Source/NestedAllPassReverb.h"/>
-      <FILE id="PNo2dz" name="NestedAllPassReverb.cpp" compile="1" resource="0"
-            file="Source/NestedAllPassReverb.cpp"/>
     </GROUP>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>

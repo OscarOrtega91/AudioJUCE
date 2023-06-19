@@ -226,38 +226,11 @@ void ReverbGUIAudioProcessorEditor::sliderValueChanged(juce::Slider *slider){
     }
     if(slider == &_roomSizeSlider){
 
-        audioProcessor._reverbEngine._roomSize_Internal=_roomSizeSlider.getValue()*15;
-        audioProcessor._reverbEngine._LPCFV.clear();
-        audioProcessor._reverbEngine._NestedAPV.clear();
-
-        audioProcessor._reverbEngine.reset();
+        //audioProcessor._reverbEngine._roomSize_Internal=_roomSizeSlider.getValue()*15;
         
-        if (audioProcessor._reverbEngine._roomSize_Internal>0.10)
-        {
-            //Only affecting variables if Room Size is bigger than a Threshold value
-            audioProcessor._reverbEngine._LPCFV[0]=audioProcessor._reverbEngine._LPCFV[0] * audioProcessor._reverbEngine._roomSize_Internal;
-            audioProcessor._reverbEngine._LPCFV[1]=audioProcessor._reverbEngine._LPCFV[1]*audioProcessor._reverbEngine._roomSize_Internal;
-            audioProcessor._reverbEngine._LPCFV[2]=audioProcessor._reverbEngine._LPCFV[2]*audioProcessor._reverbEngine._roomSize_Internal;
-            audioProcessor._reverbEngine._LPCFV[3]=audioProcessor._reverbEngine._LPCFV[3]*audioProcessor._reverbEngine._roomSize_Internal;
-            audioProcessor._reverbEngine._LPCFV[4]=audioProcessor._reverbEngine._LPCFV[4]*audioProcessor._reverbEngine._roomSize_Internal;
-            audioProcessor._reverbEngine._LPCFV[5]=audioProcessor._reverbEngine._LPCFV[5]*audioProcessor._reverbEngine._roomSize_Internal;
-            audioProcessor._reverbEngine._LPCFV[6]=audioProcessor._reverbEngine._LPCFV[6]*audioProcessor._reverbEngine._roomSize_Internal;
-            audioProcessor._reverbEngine._LPCFV[7]=audioProcessor._reverbEngine._LPCFV[7]*audioProcessor._reverbEngine._roomSize_Internal;
-            audioProcessor._reverbEngine._LPCFV[8]=audioProcessor._reverbEngine._LPCFV[8]*audioProcessor._reverbEngine._roomSize_Internal;
-
-            audioProcessor._reverbEngine._NestedAPV[0]=audioProcessor._reverbEngine._NestedAPV[0]*audioProcessor._reverbEngine._roomSize_Internal;
-            audioProcessor._reverbEngine._NestedAPV[1]=audioProcessor._reverbEngine._NestedAPV[1]*audioProcessor._reverbEngine._roomSize_Internal;
-            audioProcessor._reverbEngine._NestedAPV[2]=audioProcessor._reverbEngine._NestedAPV[2]*audioProcessor._reverbEngine._roomSize_Internal;
-            audioProcessor._reverbEngine._NestedAPV[3]=audioProcessor._reverbEngine._NestedAPV[3]*audioProcessor._reverbEngine._roomSize_Internal;
-            audioProcessor._reverbEngine._NestedAPV[4]=audioProcessor._reverbEngine._NestedAPV[4]*audioProcessor._reverbEngine._roomSize_Internal;
-            audioProcessor._reverbEngine._NestedAPV[5]=audioProcessor._reverbEngine._NestedAPV[5]*audioProcessor._reverbEngine._roomSize_Internal;
-            audioProcessor._reverbEngine._NestedAPV[6]=audioProcessor._reverbEngine._NestedAPV[6]*audioProcessor._reverbEngine._roomSize_Internal;
-            audioProcessor._reverbEngine._NestedAPV[7]=audioProcessor._reverbEngine._NestedAPV[7]*audioProcessor._reverbEngine._roomSize_Internal;
-            audioProcessor._reverbEngine._NestedAPV[8]=audioProcessor._reverbEngine._NestedAPV[8]*audioProcessor._reverbEngine._roomSize_Internal;
-            audioProcessor._reverbEngine._NestedAPV[9]=audioProcessor._reverbEngine._NestedAPV[9]*audioProcessor._reverbEngine._roomSize_Internal;
-            audioProcessor._reverbEngine._NestedAPV[10]=audioProcessor._reverbEngine._NestedAPV[10]*audioProcessor._reverbEngine._roomSize_Internal;
-            audioProcessor._reverbEngine._NestedAPV[11]=audioProcessor._reverbEngine._NestedAPV[11]*audioProcessor._reverbEngine._roomSize_Internal;
-        }
+        audioProcessor._reverbEngine.setRoomSizeValue(_roomSizeSlider.getValue()*15);
+        
+        audioProcessor._reverbEngine.changeRoomSize();
         
         audioProcessor._reverbEngine.changeDelayValues();
 
