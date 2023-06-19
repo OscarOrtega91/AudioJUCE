@@ -5,6 +5,8 @@
               companyName="Oscar Ortega" companyCopyright="Oscar Ortega" companyEmail="o.c.ortega.g@gmail.com">
   <MAINGROUP id="i31rwR" name="ReverbGUI">
     <GROUP id="{DD673650-7946-BA63-38C0-D33DB38931A7}" name="Source">
+      <FILE id="YbStaC" name="Engine.cpp" compile="1" resource="0" file="Source/Engine.cpp"/>
+      <FILE id="eg2KH4" name="Engine.h" compile="0" resource="0" file="Source/Engine.h"/>
       <FILE id="QkVQcT" name="HighPassFilter.cpp" compile="1" resource="0"
             file="Source/HighPassFilter.cpp"/>
       <FILE id="Mbq3sY" name="HighPassFilter.h" compile="0" resource="0"
