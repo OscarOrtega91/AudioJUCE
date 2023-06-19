@@ -66,14 +66,18 @@ void Engine::initializeEngine(){
 
     //Reset Delay Values
     reset();
+    resetDelay();
     changeDelayLength();
     changeDelayValues();
 }
 
-void Engine::reset(){
-    // Initialiaze Reverb Delay Values
+void Engine::resetDelay(){
     _DelayLineV.push_back(10);
     _DelayLineV.push_back(10.53);
+}
+
+void Engine::reset(){
+    // Initialiaze Reverb Delay Values
     
     _LPCFV.push_back(25.18972);
     _LPCFV.push_back(25.6972);
@@ -155,7 +159,43 @@ void Engine::prepareToPlay(){
 
     
 }
+void Engine::setRoomSizeValue(double input){
+    _roomSize_Internal = input;
+}
+void Engine::changeRoomSize(){
+    
+    _LPCFV.clear();
+    _NestedAPV.clear();
 
+    reset();
+    
+    if (_roomSize_Internal>0.10)
+    {
+        //Only affecting variables if Room Size is bigger than a Threshold value
+        _LPCFV[0]=_LPCFV[0] * _roomSize_Internal;
+        _LPCFV[1]=_LPCFV[1]*_roomSize_Internal;
+        _LPCFV[2]=_LPCFV[2]*_roomSize_Internal;
+        _LPCFV[3]=_LPCFV[3]*_roomSize_Internal;
+        _LPCFV[4]=_LPCFV[4]*_roomSize_Internal;
+        _LPCFV[5]=_LPCFV[5]*_roomSize_Internal;
+        _LPCFV[6]=_LPCFV[6]*_roomSize_Internal;
+        _LPCFV[7]=_LPCFV[7]*_roomSize_Internal;
+        _LPCFV[8]=_LPCFV[8]*_roomSize_Internal;
+
+        _NestedAPV[0]=_NestedAPV[0]*_roomSize_Internal;
+        _NestedAPV[1]=_NestedAPV[1]*_roomSize_Internal;
+        _NestedAPV[2]=_NestedAPV[2]*_roomSize_Internal;
+        _NestedAPV[3]=_NestedAPV[3]*_roomSize_Internal;
+        _NestedAPV[4]=_NestedAPV[4]*_roomSize_Internal;
+        _NestedAPV[5]=_NestedAPV[5]*_roomSize_Internal;
+        _NestedAPV[6]=_NestedAPV[6]*_roomSize_Internal;
+        _NestedAPV[7]=_NestedAPV[7]*_roomSize_Internal;
+        _NestedAPV[8]=_NestedAPV[8]*_roomSize_Internal;
+        _NestedAPV[9]=_NestedAPV[9]*_roomSize_Internal;
+        _NestedAPV[10]=_NestedAPV[10]*_roomSize_Internal;
+        _NestedAPV[11]=_NestedAPV[11]*_roomSize_Internal;
+    }
+}
 
 void Engine::process(juce::AudioBuffer<float> &buffer){
     
