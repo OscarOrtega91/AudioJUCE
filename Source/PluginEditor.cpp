@@ -21,11 +21,11 @@ ReverbGUIAudioProcessorEditor::ReverbGUIAudioProcessorEditor (ReverbGUIAudioProc
     _lpSlider.setSkewFactorFromMidPoint(1200);
     _lpSlider.addListener(this);
     _lpSlider.setTextValueSuffix(" Hz");
-    _lpSlider.setValue(audioProcessor._leftChannelLowPassFilter.getCutOffFrequency());
+    _lpSlider.setValue(audioProcessor._reverbEngine._leftChannelLowPassFilter.getCutOffFrequency());
 
     addAndMakeVisible(_lpSlider);
     _lpButton.setButtonText("Active");
-    _lpButton.setToggleState(audioProcessor._LP_flag, juce::dontSendNotification);
+    _lpButton.setToggleState(audioProcessor._reverbEngine._LP_flag, juce::dontSendNotification);
     
     getLookAndFeel().setColour(juce::Slider::thumbColourId, juce::Colours::cyan);
     getLookAndFeel().setColour(juce::ToggleButton::tickColourId, juce::Colours::cornflowerblue);
@@ -46,14 +46,14 @@ ReverbGUIAudioProcessorEditor::ReverbGUIAudioProcessorEditor (ReverbGUIAudioProc
     _hpSlider.setTextValueSuffix(" Hz");
 
     _hpSlider.addListener(this);
-    _hpSlider.setValue(audioProcessor._rightChannelHighPassFilter.getCutOffFrequency());
+    _hpSlider.setValue(audioProcessor._reverbEngine._rightChannelHighPassFilter.getCutOffFrequency());
 
     addAndMakeVisible(_hpSlider);
     _hpButton.setButtonText("Active");
     
     _hpButton.addListener(this);
     
-    _hpButton.setToggleState(audioProcessor._HP_flag, juce::dontSendNotification);
+    _hpButton.setToggleState(audioProcessor._reverbEngine._HP_flag, juce::dontSendNotification);
 
     addAndMakeVisible(_hpButton);
     
@@ -65,7 +65,7 @@ ReverbGUIAudioProcessorEditor::ReverbGUIAudioProcessorEditor (ReverbGUIAudioProc
     _wetSlider.addListener(this);
     addAndMakeVisible(_wetSlider);
     _wetSlider.setTextValueSuffix(" %");
-    _wetSlider.setValue(audioProcessor._wet);
+    _wetSlider.setValue(audioProcessor._reverbEngine._wet);
     
     addAndMakeVisible (_wetLabel);
     _wetLabel.setText ("Wet % ", juce::dontSendNotification);
@@ -76,7 +76,7 @@ ReverbGUIAudioProcessorEditor::ReverbGUIAudioProcessorEditor (ReverbGUIAudioProc
     _drySlider.addListener(this);
     addAndMakeVisible(_drySlider);
     _drySlider.setTextValueSuffix(" %");
-    _drySlider.setValue(audioProcessor._dry);
+    _drySlider.setValue(audioProcessor._reverbEngine._dry);
     
     addAndMakeVisible (_dryLabel);
     _dryLabel.setText ("Dry % ", juce::dontSendNotification);
@@ -94,7 +94,7 @@ ReverbGUIAudioProcessorEditor::ReverbGUIAudioProcessorEditor (ReverbGUIAudioProc
     _preDelaySlider.setRange(0, 300,1);
     _preDelaySlider.addListener(this);
     _preDelaySlider.setTextValueSuffix(" ms");
-    _preDelaySlider.setValue(audioProcessor._DelayLineV[0]);
+    _preDelaySlider.setValue(audioProcessor._reverbEngine._DelayLineV[0]);
 
     addAndMakeVisible(_preDelaySlider);
         
@@ -180,154 +180,95 @@ void ReverbGUIAudioProcessorEditor::sliderValueChanged(juce::Slider *slider){
         
         //Cooking variables for Low Pass Filter
         //Set CutOffFrequency and cookVariables
-        audioProcessor._leftChannelLowPassFilter.setCutOffFrequency(_lpSlider.getValue());
-        audioProcessor._leftChannelLowPassFilter.cookingVariables();
+        audioProcessor._reverbEngine._leftChannelLowPassFilter.setCutOffFrequency(_lpSlider.getValue());
+        audioProcessor._reverbEngine._leftChannelLowPassFilter.cookingVariables();
         
-        audioProcessor._rightChannelLowPassFilter.setCutOffFrequency(_lpSlider.getValue());
-        audioProcessor._rightChannelLowPassFilter.cookingVariables();
+        audioProcessor._reverbEngine._rightChannelLowPassFilter.setCutOffFrequency(_lpSlider.getValue());
+        audioProcessor._reverbEngine._rightChannelLowPassFilter.cookingVariables();
         
         
     }
     if(slider == &_hpSlider){
         //Cooking variables for High Pass Filter
-        audioProcessor._leftChannelHighPassFilter.setCutOffFrequency(_hpSlider.getValue());
-        audioProcessor._leftChannelHighPassFilter.cookingVariables();
+        audioProcessor._reverbEngine._leftChannelHighPassFilter.setCutOffFrequency(_hpSlider.getValue());
+        audioProcessor._reverbEngine._leftChannelHighPassFilter.cookingVariables();
         
-        audioProcessor._rightChannelHighPassFilter.setCutOffFrequency(_hpSlider.getValue());
-        audioProcessor._rightChannelHighPassFilter.cookingVariables();
-        
-        /*audioProcessor._HP_f0=_hpSlider.getValue();
-        audioProcessor._HP_w0= 2*  juce::MathConstants<float>::pi *
-        audioProcessor._HP_f0/audioProcessor.Fs;
-        audioProcessor._HP_alpha=sin(audioProcessor._HP_w0)/(2*audioProcessor.Q);
-        //HPF
-        
-        audioProcessor._HP_a0=1 + audioProcessor._HP_alpha;
-        audioProcessor._HP_a1 =-2* cos(audioProcessor._HP_w0);
-        audioProcessor._HP_a2= 1- audioProcessor._HP_alpha;
+        audioProcessor._reverbEngine._rightChannelHighPassFilter.setCutOffFrequency(_hpSlider.getValue());
+        audioProcessor._reverbEngine._rightChannelHighPassFilter.cookingVariables();
 
-        audioProcessor._HP_b0 =(1+cos(audioProcessor._HP_w0))/2;
-        audioProcessor._HP_b1 =-(1+cos(audioProcessor._HP_w0));
-        audioProcessor._HP_b2 =(1+cos(audioProcessor._HP_w0))/2;
-        //Normalize
-        audioProcessor._HP_b0 = audioProcessor._HP_b0 /audioProcessor._HP_a0;
-        audioProcessor._HP_b1 = audioProcessor._HP_b1 /audioProcessor._HP_a0;
-        audioProcessor._HP_b2 = audioProcessor._HP_b2 /audioProcessor._HP_a0;
-        audioProcessor._HP_a1 = audioProcessor._HP_a1 /audioProcessor._HP_a0;
-        audioProcessor._HP_a2 = audioProcessor._HP_a2 /audioProcessor._HP_a0;*/
         
     }
     if(slider == &_preDelaySlider){
         // Pre Delay in ms
-        audioProcessor._DelayLineV.clear();
-        audioProcessor._DelayLineV.push_back(_preDelaySlider.getValue());
-        audioProcessor._DelayLineV.push_back(_preDelaySlider.getValue()+0.53);
+        audioProcessor._reverbEngine._DelayLineV.clear();
+        audioProcessor._reverbEngine._DelayLineV.push_back(_preDelaySlider.getValue());
+        audioProcessor._reverbEngine._DelayLineV.push_back(_preDelaySlider.getValue()+0.53);
 
-        audioProcessor.D1_L.changeMDelay(audioProcessor._DelayLineV.front());
-        audioProcessor.D1_R.changeMDelay(audioProcessor._DelayLineV.back());
+        audioProcessor._reverbEngine.D1_L.changeMDelay(audioProcessor._reverbEngine._DelayLineV.front());
+        audioProcessor._reverbEngine.D1_R.changeMDelay(audioProcessor._reverbEngine._DelayLineV.back());
         
     }
     if(slider == &_wetSlider){
         // Wet % 
         double temp=_wetSlider.getValue();
         
-        audioProcessor._wet_Internal=temp/100;
-        audioProcessor._wet=(int)temp;
+        audioProcessor._reverbEngine._wet_Internal=temp/100;
+        audioProcessor._reverbEngine._wet=(int)temp;
         
         
     }
     if(slider == &_drySlider){
         double temp=_drySlider.getValue();
 
-        audioProcessor._dry_Internal=temp/100;
-        audioProcessor._dry=(int)temp;
+        audioProcessor._reverbEngine._dry_Internal=temp/100;
+        audioProcessor._reverbEngine._dry=(int)temp;
 
     }
     if(slider == &_roomSizeSlider){
 
-        audioProcessor._roomSize_Internal=_roomSizeSlider.getValue()*15;
-        audioProcessor._LPCFV.clear();
-        audioProcessor._NestedAPV.clear();
+        audioProcessor._reverbEngine._roomSize_Internal=_roomSizeSlider.getValue()*15;
+        audioProcessor._reverbEngine._LPCFV.clear();
+        audioProcessor._reverbEngine._NestedAPV.clear();
 
-        audioProcessor._LPCFV.push_back(25.18972);
-        audioProcessor._LPCFV.push_back(25.6972);
-        audioProcessor._LPCFV.push_back(30.1972);
-        audioProcessor._LPCFV.push_back(30.6972);
-        audioProcessor._LPCFV.push_back(15.9892);
-        audioProcessor._LPCFV.push_back(16.4893);
-        audioProcessor._LPCFV.push_back(14.892);
-        audioProcessor._LPCFV.push_back(15.3903);
+        audioProcessor._reverbEngine.reset();
         
-        audioProcessor._NestedAPV.push_back(11.23);
-        audioProcessor._NestedAPV.push_back(3.1);
-        audioProcessor._NestedAPV.push_back(11.7546);
-        audioProcessor._NestedAPV.push_back(3.6043);
-        audioProcessor._NestedAPV.push_back(10.9560);
-        audioProcessor._NestedAPV.push_back(3.456);
-        audioProcessor._NestedAPV.push_back(11.4565);
-        audioProcessor._NestedAPV.push_back(3.9053);
-        audioProcessor._NestedAPV.push_back(7.6365);
-        audioProcessor._NestedAPV.push_back(2.5342);
-        audioProcessor._NestedAPV.push_back(8.165);
-        audioProcessor._NestedAPV.push_back(2.9053);
-        
-        if (audioProcessor._roomSize_Internal>0.10)
+        if (audioProcessor._reverbEngine._roomSize_Internal>0.10)
         {
             //Only affecting variables if Room Size is bigger than a Threshold value
-            audioProcessor._LPCFV[0]=audioProcessor._LPCFV[0]*audioProcessor._roomSize_Internal;
-            audioProcessor._LPCFV[1]=audioProcessor._LPCFV[1]*audioProcessor._roomSize_Internal;
-            audioProcessor._LPCFV[2]=audioProcessor._LPCFV[2]*audioProcessor._roomSize_Internal;
-            audioProcessor._LPCFV[3]=audioProcessor._LPCFV[3]*audioProcessor._roomSize_Internal;
-            audioProcessor._LPCFV[4]=audioProcessor._LPCFV[4]*audioProcessor._roomSize_Internal;
-            audioProcessor._LPCFV[5]=audioProcessor._LPCFV[5]*audioProcessor._roomSize_Internal;
-            audioProcessor._LPCFV[6]=audioProcessor._LPCFV[6]*audioProcessor._roomSize_Internal;
-            audioProcessor._LPCFV[7]=audioProcessor._LPCFV[7]*audioProcessor._roomSize_Internal;
-            audioProcessor._LPCFV[8]=audioProcessor._LPCFV[8]*audioProcessor._roomSize_Internal;
+            audioProcessor._reverbEngine._LPCFV[0]=audioProcessor._reverbEngine._LPCFV[0] * audioProcessor._reverbEngine._roomSize_Internal;
+            audioProcessor._reverbEngine._LPCFV[1]=audioProcessor._reverbEngine._LPCFV[1]*audioProcessor._reverbEngine._roomSize_Internal;
+            audioProcessor._reverbEngine._LPCFV[2]=audioProcessor._reverbEngine._LPCFV[2]*audioProcessor._reverbEngine._roomSize_Internal;
+            audioProcessor._reverbEngine._LPCFV[3]=audioProcessor._reverbEngine._LPCFV[3]*audioProcessor._reverbEngine._roomSize_Internal;
+            audioProcessor._reverbEngine._LPCFV[4]=audioProcessor._reverbEngine._LPCFV[4]*audioProcessor._reverbEngine._roomSize_Internal;
+            audioProcessor._reverbEngine._LPCFV[5]=audioProcessor._reverbEngine._LPCFV[5]*audioProcessor._reverbEngine._roomSize_Internal;
+            audioProcessor._reverbEngine._LPCFV[6]=audioProcessor._reverbEngine._LPCFV[6]*audioProcessor._reverbEngine._roomSize_Internal;
+            audioProcessor._reverbEngine._LPCFV[7]=audioProcessor._reverbEngine._LPCFV[7]*audioProcessor._reverbEngine._roomSize_Internal;
+            audioProcessor._reverbEngine._LPCFV[8]=audioProcessor._reverbEngine._LPCFV[8]*audioProcessor._reverbEngine._roomSize_Internal;
 
-            audioProcessor._NestedAPV[0]=audioProcessor._NestedAPV[0]*audioProcessor._roomSize_Internal;
-            audioProcessor._NestedAPV[1]=audioProcessor._NestedAPV[1]*audioProcessor._roomSize_Internal;
-            audioProcessor._NestedAPV[2]=audioProcessor._NestedAPV[2]*audioProcessor._roomSize_Internal;
-            audioProcessor._NestedAPV[3]=audioProcessor._NestedAPV[3]*audioProcessor._roomSize_Internal;
-            audioProcessor._NestedAPV[4]=audioProcessor._NestedAPV[4]*audioProcessor._roomSize_Internal;
-            audioProcessor._NestedAPV[5]=audioProcessor._NestedAPV[5]*audioProcessor._roomSize_Internal;
-            audioProcessor._NestedAPV[6]=audioProcessor._NestedAPV[6]*audioProcessor._roomSize_Internal;
-            audioProcessor._NestedAPV[7]=audioProcessor._NestedAPV[7]*audioProcessor._roomSize_Internal;
-            audioProcessor._NestedAPV[8]=audioProcessor._NestedAPV[8]*audioProcessor._roomSize_Internal;
-            audioProcessor._NestedAPV[9]=audioProcessor._NestedAPV[9]*audioProcessor._roomSize_Internal;
-            audioProcessor._NestedAPV[10]=audioProcessor._NestedAPV[10]*audioProcessor._roomSize_Internal;
-            audioProcessor._NestedAPV[11]=audioProcessor._NestedAPV[11]*audioProcessor._roomSize_Internal;
+            audioProcessor._reverbEngine._NestedAPV[0]=audioProcessor._reverbEngine._NestedAPV[0]*audioProcessor._reverbEngine._roomSize_Internal;
+            audioProcessor._reverbEngine._NestedAPV[1]=audioProcessor._reverbEngine._NestedAPV[1]*audioProcessor._reverbEngine._roomSize_Internal;
+            audioProcessor._reverbEngine._NestedAPV[2]=audioProcessor._reverbEngine._NestedAPV[2]*audioProcessor._reverbEngine._roomSize_Internal;
+            audioProcessor._reverbEngine._NestedAPV[3]=audioProcessor._reverbEngine._NestedAPV[3]*audioProcessor._reverbEngine._roomSize_Internal;
+            audioProcessor._reverbEngine._NestedAPV[4]=audioProcessor._reverbEngine._NestedAPV[4]*audioProcessor._reverbEngine._roomSize_Internal;
+            audioProcessor._reverbEngine._NestedAPV[5]=audioProcessor._reverbEngine._NestedAPV[5]*audioProcessor._reverbEngine._roomSize_Internal;
+            audioProcessor._reverbEngine._NestedAPV[6]=audioProcessor._reverbEngine._NestedAPV[6]*audioProcessor._reverbEngine._roomSize_Internal;
+            audioProcessor._reverbEngine._NestedAPV[7]=audioProcessor._reverbEngine._NestedAPV[7]*audioProcessor._reverbEngine._roomSize_Internal;
+            audioProcessor._reverbEngine._NestedAPV[8]=audioProcessor._reverbEngine._NestedAPV[8]*audioProcessor._reverbEngine._roomSize_Internal;
+            audioProcessor._reverbEngine._NestedAPV[9]=audioProcessor._reverbEngine._NestedAPV[9]*audioProcessor._reverbEngine._roomSize_Internal;
+            audioProcessor._reverbEngine._NestedAPV[10]=audioProcessor._reverbEngine._NestedAPV[10]*audioProcessor._reverbEngine._roomSize_Internal;
+            audioProcessor._reverbEngine._NestedAPV[11]=audioProcessor._reverbEngine._NestedAPV[11]*audioProcessor._reverbEngine._roomSize_Internal;
         }
         
-        audioProcessor.lpfc1_L.changeMDelay(audioProcessor._LPCFV[0]);
-        audioProcessor.lpfc1_R.changeMDelay(audioProcessor._LPCFV[1]);
-        audioProcessor.lpfc2_L.changeMDelay(audioProcessor._LPCFV[2]);
-        audioProcessor.lpfc2_R.changeMDelay(audioProcessor._LPCFV[3]);
-        audioProcessor.lpfc3_L.changeMDelay(audioProcessor._LPCFV[4]);
-        audioProcessor.lpfc3_R.changeMDelay(audioProcessor._LPCFV[5]);
-        audioProcessor.lpfc4_L.changeMDelay(audioProcessor._LPCFV[6]);
-        audioProcessor.lpfc4_R.changeMDelay(audioProcessor._LPCFV[7]);
+        audioProcessor._reverbEngine.changeDelayValues();
 
-        
-        audioProcessor.NestedAP1_L.changeMDelay(audioProcessor._NestedAPV[0]);
-        audioProcessor.NestedAP1_L.changeMDelayNested(audioProcessor._NestedAPV[1]);
-        audioProcessor.NestedAP1_R.changeMDelay(audioProcessor._NestedAPV[2]);
-        audioProcessor.NestedAP1_R.changeMDelayNested(audioProcessor._NestedAPV[3]);
-        audioProcessor.NestedAP2_L.changeMDelay(audioProcessor._NestedAPV[4]);
-        audioProcessor.NestedAP2_L.changeMDelayNested(audioProcessor._NestedAPV[5]);
-        audioProcessor.NestedAP2_R.changeMDelay(audioProcessor._NestedAPV[6]);
-        audioProcessor.NestedAP2_R.changeMDelayNested(audioProcessor._NestedAPV[7]);
-        audioProcessor.NestedAP3_L.changeMDelay(audioProcessor._NestedAPV[8]);
-        audioProcessor.NestedAP3_L.changeMDelayNested(audioProcessor._NestedAPV[9]);
-        audioProcessor.NestedAP3_R.changeMDelay(audioProcessor._NestedAPV[10]);
-        audioProcessor.NestedAP3_R.changeMDelayNested(audioProcessor._NestedAPV[11]);
     }
 }
 
 void ReverbGUIAudioProcessorEditor::buttonClicked(juce::Button *button){
     if(button == &_lpButton){
-        audioProcessor._LP_flag= !audioProcessor._LP_flag;
+        audioProcessor._reverbEngine._LP_flag= !audioProcessor._reverbEngine._LP_flag;
     }
     if(button == &_hpButton){
-        audioProcessor._HP_flag= !audioProcessor._HP_flag;
+        audioProcessor._reverbEngine._HP_flag= !audioProcessor._reverbEngine._HP_flag;
     }
 }
