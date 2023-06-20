@@ -24,12 +24,29 @@ ReverbGUIAudioProcessor::ReverbGUIAudioProcessor()
 {
     _reverbEngine.setSamplingFrequency(getSampleRate());
     _reverbEngine.initializeEngine();
-
+    juce::AudioProcessorValueTreeState::ParameterLayout layout{};
+    _apvts = std::make_unique<juce::AudioProcessorValueTreeState>(*this, nullptr, "ReverbModule", createParameterLayout(layout));
+    
+    _apvts->state.addListener(this);
+    
+    
 }
+
 
 ReverbGUIAudioProcessor::~ReverbGUIAudioProcessor()
 {
     // Clear engine to release resources
+}
+
+juce::AudioProcessorValueTreeState::ParameterLayout ReverbGUIAudioProcessor::createParameterLayout(juce::AudioProcessorValueTreeState::ParameterLayout &layout){
+    
+    auto wetParam = std::make_unique<juce::AudioProcessorValueTreeState::Parameter>(ParametersID::wetID, ParametersID::wetID,ParametersID::wetID, juce::NormalisableRange<float>(0.0f,100.0f,1.0f), 50.0f, valueToTextFunction, textToValueFunction);
+    
+    _parametersMap["Wet"] = wetParam.get();
+    
+    layout.add(std::move(wetParam));
+    
+    return std::move(layout);
 }
 
 //==============================================================================
@@ -143,6 +160,8 @@ void ReverbGUIAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
     
+    //auto val = _parametersMap["Wet"]->get();
+    //std::cout<< "Wet Val " << val << std::endl;
     _reverbEngine.process(buffer);
     
 }
@@ -177,4 +196,12 @@ void ReverbGUIAudioProcessor::setStateInformation (const void* data, int sizeInB
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
     return new ReverbGUIAudioProcessor();
+}
+
+void ReverbGUIAudioProcessor::valueTreePropertyChanged(juce::ValueTree &treeWhosePropertyHasChanged, const juce::Identifier &property){
+    
+    const auto updateId = treeWhosePropertyHasChanged.getProperty("id").toString();
+    
+    std::cout << "ID property changed" << updateId << std::endl;
+    
 }
