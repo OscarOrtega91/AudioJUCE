@@ -18,6 +18,20 @@
 #include "LowPassFilter.h"
 #include "HighPassFilter.h"
 
+namespace ParametersID{
+
+const juce::String wetID="Wet";
+//LowPass
+//HighPass
+//Flag Low Pass
+//Flag High Pass
+//Dry
+// Delay
+//Room Size
+
+}
+
+
 class Engine
 {
 public:

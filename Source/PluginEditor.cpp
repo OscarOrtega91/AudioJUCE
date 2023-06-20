@@ -68,6 +68,7 @@ ReverbGUIAudioProcessorEditor::ReverbGUIAudioProcessorEditor (ReverbGUIAudioProc
     _wetSlider.setValue(audioProcessor._reverbEngine._wet);
     
     addAndMakeVisible (_wetLabel);
+    _sliderAttachment.add(std::make_unique<juce::SliderParameterAttachment>(*audioProcessor._parametersMap[ParametersID::wetID],_wetSlider));
     _wetLabel.setText ("Wet % ", juce::dontSendNotification);
     _wetLabel.attachToComponent (&_wetSlider, true);
     
@@ -77,6 +78,7 @@ ReverbGUIAudioProcessorEditor::ReverbGUIAudioProcessorEditor (ReverbGUIAudioProc
     addAndMakeVisible(_drySlider);
     _drySlider.setTextValueSuffix(" %");
     _drySlider.setValue(audioProcessor._reverbEngine._dry);
+
     
     addAndMakeVisible (_dryLabel);
     _dryLabel.setText ("Dry % ", juce::dontSendNotification);
@@ -109,6 +111,7 @@ ReverbGUIAudioProcessorEditor::ReverbGUIAudioProcessorEditor (ReverbGUIAudioProc
 
 ReverbGUIAudioProcessorEditor::~ReverbGUIAudioProcessorEditor()
 {
+    _sliderAttachment.clear();
 }
 
 //==============================================================================

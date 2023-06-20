@@ -32,6 +32,9 @@ private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     ReverbGUIAudioProcessor& audioProcessor;
+    
+    juce::OwnedArray<juce::SliderParameterAttachment> _sliderAttachment;
+
     juce::Slider _lpSlider;
     juce::Slider _hpSlider;
     juce::Slider _wetSlider;

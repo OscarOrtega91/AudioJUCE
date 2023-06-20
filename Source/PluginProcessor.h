@@ -15,7 +15,8 @@
 //==============================================================================
 /**
 */
-class ReverbGUIAudioProcessor  : public juce::AudioProcessor
+class ReverbGUIAudioProcessor  : public juce::AudioProcessor,
+public juce::ValueTree::Listener
 {
 public:
     //==============================================================================
@@ -56,9 +57,22 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
     
     Engine _reverbEngine;
-    
+    std::map<juce::String, juce::AudioProcessorValueTreeState::Parameter*> _parametersMap;
+
+    static juce::String valueToTextFunction(float x){
+        return juce::String(x,2);
+    }
+    static float textToValueFunction(const juce::String& x){
+        return x.getFloatValue();
+    }
 private:
     //==============================================================================
+    
+    juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout(juce::AudioProcessorValueTreeState::ParameterLayout& layout);
+    
+    std::unique_ptr<juce::AudioProcessorValueTreeState> _apvts;
+    
+    void valueTreePropertyChanged(juce::ValueTree& treeWhosePropertyHasChanged, const juce::Identifier& property) final override;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ReverbGUIAudioProcessor)
     
