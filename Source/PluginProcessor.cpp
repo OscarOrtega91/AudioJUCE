@@ -42,9 +42,53 @@ juce::AudioProcessorValueTreeState::ParameterLayout ReverbGUIAudioProcessor::cre
     
     auto wetParam = std::make_unique<juce::AudioProcessorValueTreeState::Parameter>(ParametersID::wetID, ParametersID::wetID,ParametersID::wetID, juce::NormalisableRange<float>(0.0f,100.0f,1.0f), 50.0f, valueToTextFunction, textToValueFunction);
     
-    _parametersMap["Wet"] = wetParam.get();
+    _parametersMap[ParametersID::wetID] = wetParam.get();
     
     layout.add(std::move(wetParam));
+    
+    auto dryParam = std::make_unique<juce::AudioProcessorValueTreeState::Parameter>(ParametersID::dryID, ParametersID::dryID,ParametersID::dryID, juce::NormalisableRange<float>(0.0f,100.0f,1.0f), 50.0f, valueToTextFunction, textToValueFunction);
+    
+    _parametersMap[ParametersID::dryID] = dryParam.get();
+    
+    layout.add(std::move(dryParam));
+    
+    
+    auto lowPassFilterParam = std::make_unique<juce::AudioProcessorValueTreeState::Parameter>(ParametersID::lowPassFilterID, ParametersID::lowPassFilterID,ParametersID::lowPassFilterID, juce::NormalisableRange<float>(20.0f,20000.0f,1.0f), 20.0f, valueToTextFunction, textToValueFunction);
+    
+    _parametersMap[ParametersID::lowPassFilterID] = lowPassFilterParam.get();
+    
+    layout.add(std::move(lowPassFilterParam));
+    
+    auto highPassFilterParam = std::make_unique<juce::AudioProcessorValueTreeState::Parameter>(ParametersID::highPassFilterID, ParametersID::highPassFilterID,ParametersID::highPassFilterID, juce::NormalisableRange<float>(20.0f,20000.0f,1.0f), 20.0f, valueToTextFunction, textToValueFunction);
+    
+    _parametersMap[ParametersID::highPassFilterID] = highPassFilterParam.get();
+    
+    layout.add(std::move(highPassFilterParam));
+    
+    auto delayParam = std::make_unique<juce::AudioProcessorValueTreeState::Parameter>(ParametersID::delayID, ParametersID::delayID,ParametersID::delayID, juce::NormalisableRange<float>(0.0f,300.0f,1.0f), 10.0f, valueToTextFunction, textToValueFunction);
+    
+    _parametersMap[ParametersID::delayID] = delayParam.get();
+    
+    layout.add(std::move(delayParam));
+    
+    
+    auto roomSizeParam = std::make_unique<juce::AudioProcessorValueTreeState::Parameter>(ParametersID::roomSizeID, ParametersID::roomSizeID,ParametersID::roomSizeID, juce::NormalisableRange<float>(0.0f,1.0f,0.1f), 0.1f, valueToTextFunction, textToValueFunction);
+    
+    _parametersMap[ParametersID::roomSizeID] = roomSizeParam.get();
+    
+    layout.add(std::move(roomSizeParam));
+    
+    auto flagLowPassParam = std::make_unique<juce::AudioProcessorValueTreeState::Parameter>(ParametersID::flagLowPassID, ParametersID::flagLowPassID,ParametersID::flagLowPassID, juce::NormalisableRange<float>(0.0f,1.0f,1.0f), 0.0f, valueToTextFunction, textToValueFunction);
+    
+    _parametersMap[ParametersID::flagLowPassID] = flagLowPassParam.get();
+    
+    layout.add(std::move(flagLowPassParam));
+    
+    auto flagHighPassParam = std::make_unique<juce::AudioProcessorValueTreeState::Parameter>(ParametersID::flagHighPassID, ParametersID::flagHighPassID,ParametersID::flagHighPassID, juce::NormalisableRange<float>(0.0f,1.0f,1.0f), 0.0f, valueToTextFunction, textToValueFunction);
+    
+    _parametersMap[ParametersID::flagHighPassID] = flagHighPassParam.get();
+    
+    layout.add(std::move(flagHighPassParam));
     
     return std::move(layout);
 }
@@ -200,8 +244,10 @@ juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 
 void ReverbGUIAudioProcessor::valueTreePropertyChanged(juce::ValueTree &treeWhosePropertyHasChanged, const juce::Identifier &property){
     
-    const auto updateId = treeWhosePropertyHasChanged.getProperty("id").toString();
+    auto updateId = treeWhosePropertyHasChanged.getProperty("id").toString();
     
-    std::cout << "ID property changed" << updateId << std::endl;
+    //std::cout << "ID property changed" << updateId << std::endl;
+    _reverbEngine.setParameterValue(updateId, _parametersMap[updateId]->get());
+    
     
 }

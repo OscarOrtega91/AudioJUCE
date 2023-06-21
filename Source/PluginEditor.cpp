@@ -19,17 +19,20 @@ ReverbGUIAudioProcessorEditor::ReverbGUIAudioProcessorEditor (ReverbGUIAudioProc
     _lpSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 70, 40);
     _lpSlider.setRange(20.00, 20000.00,1.0);
     _lpSlider.setSkewFactorFromMidPoint(1200);
-    _lpSlider.addListener(this);
     _lpSlider.setTextValueSuffix(" Hz");
-    _lpSlider.setValue(audioProcessor._reverbEngine._leftChannelLowPassFilter.getCutOffFrequency());
+    _sliderAttachment.add(std::make_unique<juce::SliderParameterAttachment>(*audioProcessor._parametersMap[ParametersID::lowPassFilterID],_lpSlider));
+    
+    _lpSlider.setValue(audioProcessor._reverbEngine.getParameterValue(ParametersID::lowPassFilterID) );
 
     addAndMakeVisible(_lpSlider);
     _lpButton.setButtonText("Active");
-    _lpButton.setToggleState(audioProcessor._reverbEngine._LP_flag, juce::dontSendNotification);
+    _lpButton.setToggleState(audioProcessor._reverbEngine.getParameterValue(ParametersID::flagLowPassID), juce::dontSendNotification);
+    _buttonAttachment.add(std::make_unique<juce::ButtonParameterAttachment>(*audioProcessor._parametersMap[ParametersID::flagLowPassID],_lpButton));
+
     
     getLookAndFeel().setColour(juce::Slider::thumbColourId, juce::Colours::cyan);
     getLookAndFeel().setColour(juce::ToggleButton::tickColourId, juce::Colours::cornflowerblue);
-    _lpButton.addListener(this);
+    //_lpButton.addListener(this);
     
     
     
@@ -45,16 +48,16 @@ ReverbGUIAudioProcessorEditor::ReverbGUIAudioProcessorEditor (ReverbGUIAudioProc
     _hpSlider.setSkewFactorFromMidPoint(1200);
     _hpSlider.setTextValueSuffix(" Hz");
 
-    _hpSlider.addListener(this);
-    _hpSlider.setValue(audioProcessor._reverbEngine._rightChannelHighPassFilter.getCutOffFrequency());
+    _hpSlider.setValue(audioProcessor._reverbEngine.getParameterValue(ParametersID::highPassFilterID));
+    _sliderAttachment.add(std::make_unique<juce::SliderParameterAttachment>(*audioProcessor._parametersMap[ParametersID::highPassFilterID],_hpSlider));
 
     addAndMakeVisible(_hpSlider);
     _hpButton.setButtonText("Active");
     
-    _hpButton.addListener(this);
+    //_hpButton.addListener(this);
     
-    _hpButton.setToggleState(audioProcessor._reverbEngine._HP_flag, juce::dontSendNotification);
-
+    _hpButton.setToggleState(audioProcessor._reverbEngine.getParameterValue(ParametersID::flagHighPassID), juce::dontSendNotification);
+    _buttonAttachment.add(std::make_unique<juce::ButtonParameterAttachment>(*audioProcessor._parametersMap[ParametersID::flagHighPassID],_hpButton));
     addAndMakeVisible(_hpButton);
     
     addAndMakeVisible (_hpLabel);
@@ -62,22 +65,23 @@ ReverbGUIAudioProcessorEditor::ReverbGUIAudioProcessorEditor (ReverbGUIAudioProc
     _hpLabel.setJustificationType(juce::Justification::centred);
     
     _wetSlider.setRange(0, 100,1);
-    _wetSlider.addListener(this);
     addAndMakeVisible(_wetSlider);
     _wetSlider.setTextValueSuffix(" %");
-    _wetSlider.setValue(audioProcessor._reverbEngine._wet);
+    _wetSlider.setValue(audioProcessor._reverbEngine.getParameterValue(ParametersID::wetID));
     
     addAndMakeVisible (_wetLabel);
     _sliderAttachment.add(std::make_unique<juce::SliderParameterAttachment>(*audioProcessor._parametersMap[ParametersID::wetID],_wetSlider));
+    
     _wetLabel.setText ("Wet % ", juce::dontSendNotification);
     _wetLabel.attachToComponent (&_wetSlider, true);
     
     
     _drySlider.setRange(0, 100,1);
-    _drySlider.addListener(this);
     addAndMakeVisible(_drySlider);
     _drySlider.setTextValueSuffix(" %");
-    _drySlider.setValue(audioProcessor._reverbEngine._dry);
+    _drySlider.setValue(audioProcessor._reverbEngine.getParameterValue(ParametersID::dryID));
+
+    _sliderAttachment.add(std::make_unique<juce::SliderParameterAttachment>(*audioProcessor._parametersMap[ParametersID::dryID],_drySlider));
 
     
     addAndMakeVisible (_dryLabel);
@@ -86,17 +90,21 @@ ReverbGUIAudioProcessorEditor::ReverbGUIAudioProcessorEditor (ReverbGUIAudioProc
 
     _roomSizeSlider.setRange(0.00, 1.00,0.1);
     _roomSizeSlider.setValue(0.50);
-    _roomSizeSlider.addListener(this);
     addAndMakeVisible(_roomSizeSlider);
+    
+    _sliderAttachment.add(std::make_unique<juce::SliderParameterAttachment>(*audioProcessor._parametersMap[ParametersID::roomSizeID],_roomSizeSlider));
+
     
     addAndMakeVisible (_roomSizeLabel);
     _roomSizeLabel.setText ("Room Size ", juce::dontSendNotification);
     _roomSizeLabel.attachToComponent (&_roomSizeSlider, true);
 
     _preDelaySlider.setRange(0, 300,1);
-    _preDelaySlider.addListener(this);
     _preDelaySlider.setTextValueSuffix(" ms");
-    _preDelaySlider.setValue(audioProcessor._reverbEngine._DelayLineV[0]);
+    _preDelaySlider.setValue(audioProcessor._reverbEngine.getParameterValue(ParametersID::delayID));
+    
+    _sliderAttachment.add(std::make_unique<juce::SliderParameterAttachment>(*audioProcessor._parametersMap[ParametersID::delayID],_preDelaySlider));
+
 
     addAndMakeVisible(_preDelaySlider);
         
@@ -105,13 +113,13 @@ ReverbGUIAudioProcessorEditor::ReverbGUIAudioProcessorEditor (ReverbGUIAudioProc
     _preDelayLabel.attachToComponent (&_preDelaySlider, true);
     
     setResizable(true, true);
-    //setResizeLimits(300, 150, 900, 450);
     setSize(600, 300);
 }
 
 ReverbGUIAudioProcessorEditor::~ReverbGUIAudioProcessorEditor()
 {
     _sliderAttachment.clear();
+    _buttonAttachment.clear();
 }
 
 //==============================================================================
@@ -174,77 +182,4 @@ void ReverbGUIAudioProcessorEditor::resized()
     
     _roomSizeSlider.setBounds(roomSizeArea.reduced(border));
     
-
-}
-
-void ReverbGUIAudioProcessorEditor::sliderValueChanged(juce::Slider *slider){
-    
-    if(slider == &_lpSlider){
-        
-        //Cooking variables for Low Pass Filter
-        //Set CutOffFrequency and cookVariables
-        audioProcessor._reverbEngine._leftChannelLowPassFilter.setCutOffFrequency(_lpSlider.getValue());
-        audioProcessor._reverbEngine._leftChannelLowPassFilter.cookingVariables();
-        
-        audioProcessor._reverbEngine._rightChannelLowPassFilter.setCutOffFrequency(_lpSlider.getValue());
-        audioProcessor._reverbEngine._rightChannelLowPassFilter.cookingVariables();
-        
-        
-    }
-    if(slider == &_hpSlider){
-        //Cooking variables for High Pass Filter
-        audioProcessor._reverbEngine._leftChannelHighPassFilter.setCutOffFrequency(_hpSlider.getValue());
-        audioProcessor._reverbEngine._leftChannelHighPassFilter.cookingVariables();
-        
-        audioProcessor._reverbEngine._rightChannelHighPassFilter.setCutOffFrequency(_hpSlider.getValue());
-        audioProcessor._reverbEngine._rightChannelHighPassFilter.cookingVariables();
-
-        
-    }
-    if(slider == &_preDelaySlider){
-        // Pre Delay in ms
-        audioProcessor._reverbEngine._DelayLineV.clear();
-        audioProcessor._reverbEngine._DelayLineV.push_back(_preDelaySlider.getValue());
-        audioProcessor._reverbEngine._DelayLineV.push_back(_preDelaySlider.getValue()+0.53);
-
-        audioProcessor._reverbEngine.D1_L.changeMDelay(audioProcessor._reverbEngine._DelayLineV.front());
-        audioProcessor._reverbEngine.D1_R.changeMDelay(audioProcessor._reverbEngine._DelayLineV.back());
-        
-    }
-    if(slider == &_wetSlider){
-        // Wet % 
-        double temp=_wetSlider.getValue();
-        
-        audioProcessor._reverbEngine._wet_Internal=temp/100;
-        audioProcessor._reverbEngine._wet=(int)temp;
-        
-        
-    }
-    if(slider == &_drySlider){
-        double temp=_drySlider.getValue();
-
-        audioProcessor._reverbEngine._dry_Internal=temp/100;
-        audioProcessor._reverbEngine._dry=(int)temp;
-
-    }
-    if(slider == &_roomSizeSlider){
-
-        //audioProcessor._reverbEngine._roomSize_Internal=_roomSizeSlider.getValue()*15;
-        
-        audioProcessor._reverbEngine.setRoomSizeValue(_roomSizeSlider.getValue()*15);
-        
-        audioProcessor._reverbEngine.changeRoomSize();
-        
-        audioProcessor._reverbEngine.changeDelayValues();
-
-    }
-}
-
-void ReverbGUIAudioProcessorEditor::buttonClicked(juce::Button *button){
-    if(button == &_lpButton){
-        audioProcessor._reverbEngine._LP_flag= !audioProcessor._reverbEngine._LP_flag;
-    }
-    if(button == &_hpButton){
-        audioProcessor._reverbEngine._HP_flag= !audioProcessor._reverbEngine._HP_flag;
-    }
 }
