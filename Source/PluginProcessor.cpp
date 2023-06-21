@@ -36,6 +36,7 @@ ReverbGUIAudioProcessor::ReverbGUIAudioProcessor()
 ReverbGUIAudioProcessor::~ReverbGUIAudioProcessor()
 {
     // Clear engine to release resources
+    _parametersMap.clear();
 }
 
 juce::AudioProcessorValueTreeState::ParameterLayout ReverbGUIAudioProcessor::createParameterLayout(juce::AudioProcessorValueTreeState::ParameterLayout &layout){
@@ -201,12 +202,8 @@ bool ReverbGUIAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts
 void ReverbGUIAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     juce::ScopedNoDenormals noDenormals;
-    auto totalNumInputChannels  = getTotalNumInputChannels();
-    auto totalNumOutputChannels = getTotalNumOutputChannels();
     
-    //auto val = _parametersMap["Wet"]->get();
-    //std::cout<< "Wet Val " << val << std::endl;
-    _reverbEngine.process(buffer);
+    _reverbEngine.process(buffer, getTotalNumInputChannels(), getTotalNumOutputChannels());
     
 }
 
@@ -224,15 +221,17 @@ juce::AudioProcessorEditor* ReverbGUIAudioProcessor::createEditor()
 //==============================================================================
 void ReverbGUIAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
-    // You should use this method to store your parameters in the memory block.
-    // You could do that either as raw data, or use the XML or ValueTree classes
-    // as intermediaries to make it easy to save and load complex data.
+    auto state = _apvts->copyState();
+    std::unique_ptr<juce::XmlElement> xml (state.createXml());
+    copyXmlToBinary (*xml, destData);
 }
 
 void ReverbGUIAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    // You should use this method to restore your parameters from this memory block,
-    // whose contents will have been created by the getStateInformation() call.
+    std::unique_ptr<juce::XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
+    if (xmlState.get() != nullptr)
+        if (xmlState->hasTagName (_apvts->state.getType()))
+            _apvts->replaceState (juce::ValueTree::fromXml (*xmlState));
 }
 
 //==============================================================================

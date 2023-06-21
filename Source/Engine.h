@@ -39,7 +39,7 @@ public:
     void initializeEngine();
     double getSamplingFrequency();
     void setSamplingFrequency(double samplingFrequency);
-    void process(juce::AudioBuffer<float>& buffer );
+    void process(juce::AudioBuffer<float>& buffer , int inputChannels, int outputChannels);
     void prepareToPlay();
     void setParameterValue(juce::String& id , double val);
     double getParameterValue(const juce::String& id);
