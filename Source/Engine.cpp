@@ -353,3 +353,126 @@ void Engine::process(juce::AudioBuffer<float> &buffer){
     
     
 }
+
+
+
+void Engine::setParameterValue(juce::String& id , double val){
+    
+    if( id == ParametersID::wetID){
+        std::cout<< "Engine change val Wet " << val << std::endl;
+        
+        _wet_Internal=val/100;
+        _wet=(int)val;
+    }
+    
+    if( id == ParametersID::dryID){
+        std::cout<< "Engine change val Dry " << val << std::endl;
+        
+        _dry_Internal=val/100;
+        _dry=(int)val;
+    }
+    
+    if(id == ParametersID::lowPassFilterID){
+        
+        //Cooking variables for Low Pass Filter
+        //Set CutOffFrequency and cookVariables
+        _leftChannelLowPassFilter.setCutOffFrequency(val);
+        _leftChannelLowPassFilter.cookingVariables();
+        
+        _rightChannelLowPassFilter.setCutOffFrequency(val);
+        _rightChannelLowPassFilter.cookingVariables();
+    }
+    
+    if(id == ParametersID::highPassFilterID){
+        
+        _leftChannelHighPassFilter.setCutOffFrequency(val);
+        _leftChannelHighPassFilter.cookingVariables();
+        
+        _rightChannelHighPassFilter.setCutOffFrequency(val);
+        _rightChannelHighPassFilter.cookingVariables();
+    }
+    
+    if(id == ParametersID::delayID){
+        
+        // Pre Delay in ms
+        _DelayLineV.clear();
+        _DelayLineV.push_back(val);
+        _DelayLineV.push_back(val+0.53);
+
+        D1_L.changeMDelay(_DelayLineV.front());
+        D1_R.changeMDelay(_DelayLineV.back());
+        
+    }
+    
+    if(id == ParametersID::roomSizeID){
+        
+        setRoomSizeValue(val * 15);
+        changeRoomSize();
+        changeDelayValues();
+        
+    }
+    
+    if(id == ParametersID::flagLowPassID){
+        
+        if(val == 0){
+            _LP_flag = false;
+        }else{
+            _LP_flag = true;
+        }
+        
+    }
+    
+    if(id == ParametersID::flagHighPassID){
+        
+        if(val == 0){
+            _HP_flag = false;
+        }else{
+            _HP_flag = true;
+        }
+        
+    }
+    
+}
+
+
+double Engine::getParameterValue(const juce::String& id){
+    double res = 0 ;
+    
+    if( id.compareIgnoreCase(ParametersID::wetID)){
+        res = _wet;
+    }
+    
+    if( id.compareIgnoreCase(ParametersID::dryID)){
+        res = _dry;
+    }
+    
+    if( id.compareIgnoreCase(ParametersID::lowPassFilterID)){
+        res = _leftChannelLowPassFilter.getCutOffFrequency();
+    }
+    
+    if( id.compareIgnoreCase(ParametersID::highPassFilterID)){
+        res = _leftChannelHighPassFilter.getCutOffFrequency();
+    }
+    
+    if( id.compareIgnoreCase(ParametersID::delayID)){
+        res = _DelayLineV[0];
+    }
+    
+    if( id.compareIgnoreCase(ParametersID::flagLowPassID)){
+        if(_LP_flag){
+            res=1.0f;
+        }else{
+            res = 0.0f;
+        }
+    }
+    
+    if( id.compareIgnoreCase(ParametersID::flagHighPassID)){
+        if(_HP_flag){
+            res=1.0f;
+        }else{
+            res = 0.0f;
+        }
+    }
+    
+    return  res;
+}

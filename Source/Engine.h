@@ -20,15 +20,14 @@
 
 namespace ParametersID{
 
-const juce::String wetID="Wet";
-//LowPass
-//HighPass
-//Flag Low Pass
-//Flag High Pass
-//Dry
-// Delay
-//Room Size
-
+ const juce::String wetID="Wet";
+ const juce::String dryID="Dry";
+ const juce::String lowPassFilterID="Low Pass Filter";
+ const juce::String highPassFilterID="High Pass Filter";
+ const juce::String delayID="Delay";
+ const juce::String roomSizeID="Room Size";
+ const juce::String flagLowPassID="Flag Low Pass Filter";
+ const juce::String flagHighPassID="Flag High Pass Filter";
 }
 
 
@@ -38,29 +37,31 @@ public:
     Engine();
     ~Engine();
     void initializeEngine();
-    void changeDelayValues();
-    void changeDelayLength();
     double getSamplingFrequency();
     void setSamplingFrequency(double samplingFrequency);
     void process(juce::AudioBuffer<float>& buffer );
-    void reset(); // Reset Delay Values
-
-    void resetDelay();
-    
     void prepareToPlay();
-    
+    void setParameterValue(juce::String& id , double val);
+    double getParameterValue(const juce::String& id);
+
+
+
+
+
+private:
+    void changeDelayValues();
+    void changeDelayLength();
+
+    void reset(); // Reset Delay Values
+    void resetDelay();
     void setRoomSizeValue(double input);
     void changeRoomSize();
-    
-    double Fs; //Sampling Frequency
-    
-    
     
     bool _LP_flag=false;
     
     bool _HP_flag=false;
+    double Fs; //Sampling Frequency
 
-    
     int _wet=50;
     int _dry=50;
     
