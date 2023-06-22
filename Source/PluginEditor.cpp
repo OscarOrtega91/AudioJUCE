@@ -21,18 +21,15 @@ ReverbGUIAudioProcessorEditor::ReverbGUIAudioProcessorEditor (ReverbGUIAudioProc
     _lpSlider.setSkewFactorFromMidPoint(1200);
     _lpSlider.setTextValueSuffix(" Hz");
     _sliderAttachment.add(std::make_unique<juce::SliderParameterAttachment>(*audioProcessor._parametersMap[ParametersID::lowPassFilterID],_lpSlider));
-    
     _lpSlider.setValue(audioProcessor._reverbEngine.getParameterValue(ParametersID::lowPassFilterID) );
-
+    _lpSlider.setLookAndFeel(&_customLooknFeel);
     addAndMakeVisible(_lpSlider);
+    
     _lpButton.setButtonText("Active");
     _lpButton.setToggleState(audioProcessor._reverbEngine.getParameterValue(ParametersID::flagLowPassID), juce::dontSendNotification);
     _buttonAttachment.add(std::make_unique<juce::ButtonParameterAttachment>(*audioProcessor._parametersMap[ParametersID::flagLowPassID],_lpButton));
 
     
-    getLookAndFeel().setColour(juce::Slider::thumbColourId, juce::Colours::cyan);
-    getLookAndFeel().setColour(juce::ToggleButton::tickColourId, juce::Colours::cornflowerblue);
-    //_lpButton.addListener(this);
     
     
     
@@ -47,6 +44,7 @@ ReverbGUIAudioProcessorEditor::ReverbGUIAudioProcessorEditor (ReverbGUIAudioProc
     _hpSlider.setRange(20.00, 20000.00,1.0);
     _hpSlider.setSkewFactorFromMidPoint(1200);
     _hpSlider.setTextValueSuffix(" Hz");
+    _hpSlider.setLookAndFeel(&_customLooknFeel);
 
     _hpSlider.setValue(audioProcessor._reverbEngine.getParameterValue(ParametersID::highPassFilterID));
     _sliderAttachment.add(std::make_unique<juce::SliderParameterAttachment>(*audioProcessor._parametersMap[ParametersID::highPassFilterID],_hpSlider));
@@ -54,7 +52,6 @@ ReverbGUIAudioProcessorEditor::ReverbGUIAudioProcessorEditor (ReverbGUIAudioProc
     addAndMakeVisible(_hpSlider);
     _hpButton.setButtonText("Active");
     
-    //_hpButton.addListener(this);
     
     _hpButton.setToggleState(audioProcessor._reverbEngine.getParameterValue(ParametersID::flagHighPassID), juce::dontSendNotification);
     _buttonAttachment.add(std::make_unique<juce::ButtonParameterAttachment>(*audioProcessor._parametersMap[ParametersID::flagHighPassID],_hpButton));
@@ -67,6 +64,7 @@ ReverbGUIAudioProcessorEditor::ReverbGUIAudioProcessorEditor (ReverbGUIAudioProc
     _wetSlider.setRange(0, 100,1);
     addAndMakeVisible(_wetSlider);
     _wetSlider.setTextValueSuffix(" %");
+    _wetSlider.setLookAndFeel(&_customLooknFeel);
     _wetSlider.setValue(audioProcessor._reverbEngine.getParameterValue(ParametersID::wetID));
     
     addAndMakeVisible (_wetLabel);
@@ -80,6 +78,7 @@ ReverbGUIAudioProcessorEditor::ReverbGUIAudioProcessorEditor (ReverbGUIAudioProc
     addAndMakeVisible(_drySlider);
     _drySlider.setTextValueSuffix(" %");
     _drySlider.setValue(audioProcessor._reverbEngine.getParameterValue(ParametersID::dryID));
+    _drySlider.setLookAndFeel(&_customLooknFeel);
 
     _sliderAttachment.add(std::make_unique<juce::SliderParameterAttachment>(*audioProcessor._parametersMap[ParametersID::dryID],_drySlider));
 
@@ -90,8 +89,9 @@ ReverbGUIAudioProcessorEditor::ReverbGUIAudioProcessorEditor (ReverbGUIAudioProc
 
     _roomSizeSlider.setRange(0.00, 1.00,0.1);
     _roomSizeSlider.setValue(0.50);
+    _roomSizeSlider.setLookAndFeel(&_customLooknFeel);
     addAndMakeVisible(_roomSizeSlider);
-    
+
     _sliderAttachment.add(std::make_unique<juce::SliderParameterAttachment>(*audioProcessor._parametersMap[ParametersID::roomSizeID],_roomSizeSlider));
 
     
@@ -102,7 +102,8 @@ ReverbGUIAudioProcessorEditor::ReverbGUIAudioProcessorEditor (ReverbGUIAudioProc
     _preDelaySlider.setRange(0, 300,1);
     _preDelaySlider.setTextValueSuffix(" ms");
     _preDelaySlider.setValue(audioProcessor._reverbEngine.getParameterValue(ParametersID::delayID));
-    
+    _preDelaySlider.setLookAndFeel(&_customLooknFeel);
+
     _sliderAttachment.add(std::make_unique<juce::SliderParameterAttachment>(*audioProcessor._parametersMap[ParametersID::delayID],_preDelaySlider));
 
 
@@ -129,7 +130,6 @@ void ReverbGUIAudioProcessorEditor::paint (juce::Graphics& g)
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
 
     g.setColour (juce::Colours::floralwhite);
-    //SET VALUES OF VARIABLES TO CONTROL
     
 
 }

@@ -5,6 +5,10 @@
               companyName="Oscar Ortega" companyCopyright="Oscar Ortega" companyEmail="o.c.ortega.g@gmail.com">
   <MAINGROUP id="i31rwR" name="ReverbGUI">
     <GROUP id="{DD673650-7946-BA63-38C0-D33DB38931A7}" name="Source">
+      <GROUP id="{95B27CDC-DD95-AEF0-AFED-538361C9C4BA}" name="UI">
+        <FILE id="WL5uOY" name="CustomStyle.cpp" compile="1" resource="0" file="Source/CustomStyle.cpp"/>
+        <FILE id="Qzr9rX" name="CustomStyle.h" compile="0" resource="0" file="Source/CustomStyle.h"/>
+      </GROUP>
       <GROUP id="{ACACC5A1-526A-E2B5-0211-F268D3891AD5}" name="Engine">
         <FILE id="eg2KH4" name="Engine.h" compile="0" resource="0" file="Source/Engine.h"/>
         <FILE id="YbStaC" name="Engine.cpp" compile="1" resource="0" file="Source/Engine.cpp"/>
