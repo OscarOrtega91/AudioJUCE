@@ -10,6 +10,7 @@
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
+#include "CustomStyle.h"
 
 //==============================================================================
 /**
@@ -51,6 +52,8 @@ private:
     juce::Label  _preDelayLabel;
     juce::Label  _lpLabel;
     juce::Label  _hpLabel;
+    
+    CustomStyle _customLooknFeel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ReverbGUIAudioProcessorEditor)
 };

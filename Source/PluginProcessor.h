@@ -60,7 +60,7 @@ public:
     std::map<juce::String, juce::AudioProcessorValueTreeState::Parameter*> _parametersMap;
 
     static juce::String valueToTextFunction(float x){
-        return juce::String(x,2);
+        return juce::String(x,0);
     }
     static float textToValueFunction(const juce::String& x){
         return x.getFloatValue();

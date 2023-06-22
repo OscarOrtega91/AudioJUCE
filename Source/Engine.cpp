@@ -345,14 +345,12 @@ void Engine::process(juce::AudioBuffer<float> &buffer, int inputChannels, int ou
 void Engine::setParameterValue(juce::String& id , double val){
     
     if( id == ParametersID::wetID){
-        std::cout<< "Engine change val Wet " << val << std::endl;
         
         _wet_Internal=val/100;
         _wet=(int)val;
     }
     
     if( id == ParametersID::dryID){
-        std::cout<< "Engine change val Dry " << val << std::endl;
         
         _dry_Internal=val/100;
         _dry=(int)val;
