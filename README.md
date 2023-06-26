@@ -1,5 +1,5 @@
 
-Xcode project to create an audio plugin
+Reverb Audio plugin
 JUCE Framework
 
 Audio Plugin to Add Reverb with Low Pass and/or High Pass Filter
@@ -19,13 +19,12 @@ High Pass Cutoff Frequency
 High Pass Active
 
 
-File ReverGUI-OscarOrtega.png display the  Reverb Audio Plugin
 Tested in REAPER 
 
 Video of the Reverb plugin working can be found in:
-https://youtu.be/73aJAkYzyiA
+https://youtu.be/r2C3ryJI5Mk
 
 Any issues or questions contact: o.c.ortega.g@gmail.com
 Created by Oscar Ortega 
-8th October 2021
+26th June 2023
 JUCE Framework 6.1.2
